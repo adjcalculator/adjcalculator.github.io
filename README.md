@@ -1,1 +1,112 @@
-# adjcalculator.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Pay Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Instacart Adjustment Pay Calculator</h2>
+
+    <label>Miles</label>
+    <input type="text" id="miles">
+
+    <label>Hours</label>
+    <input type="number" id="hours">
+
+    <label>Minutes</label>
+    <input type="number" id="minutes">
+
+    <label>Batch Pay</label>
+    <input type="number" id="batchPay">
+
+    <label>Tip</label>
+    <input type="number" id="tip">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      let milesInput = document.getElementById('miles').value;
+      let miles = milesInput.split('+').reduce((sum, x) => sum + parseFloat(x || 0), 0);
+
+      let hours = parseInt(document.getElementById('hours').value) || 0;
+      let minutes = parseInt(document.getElementById('minutes').value) || 0;
+      let batchPay = parseFloat(document.getElementById('batchPay').value) || 0;
+      let tip = parseFloat(document.getElementById('tip').value) || 0;
+
+      let totalTimeHours = hours + (minutes / 60);
+      let guaranteedPay = (0.37 * miles) + (20.28 * totalTimeHours);
+
+      let adjustmentPay = 0;
+      let message = "";
+
+      if (batchPay >= guaranteedPay) {
+        message = "No adjustment pay for this order.";
+      } else {
+        adjustmentPay = guaranteedPay - batchPay;
+      }
+
+      let totalPay = batchPay + adjustmentPay + tip;
+
+      document.getElementById('result').innerHTML = `
+        <strong>--- Order Summary ---</strong><br>
+        Miles Driven: ${miles.toFixed(2)}<br>
+        Total Time: ${hours}h ${minutes}m<br>
+        Adjustment Pay: $${adjustmentPay.toFixed(2)}<br>
+        Total Pay: $${totalPay.toFixed(2)}<br>
+        <em>${message}</em>
+      `;
+    }
+  </script>
+</body>
+</html>
